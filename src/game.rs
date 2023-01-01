@@ -39,13 +39,15 @@ impl GameState for GameStateGameplay {
         GameStateUpdate::Continue
     }
 
-    fn on_draw(&mut self, _delta_time: f32, pixels: &mut Pixels) {
+    fn on_draw(&mut self, delta_time: f32, pixels: &mut Pixels) {
         for y in 0..256 {
             for x in 0..256 {
                 let c = (x ^ y) as u8;
                 pixels.draw_pixel((x, y), (c, c, c));
             }
         }
+
+        pixels.draw_text((16, 16), &format!("fps: {:.0}", (1.0 / delta_time).floor()))
     }
 }
 

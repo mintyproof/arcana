@@ -34,6 +34,28 @@ impl Pixels {
         self.buffer[offset + 2] = colour.2;
     }
 
+    pub fn draw_text(&mut self, position: (usize, usize), text: &str) {
+        let mut position = position;
+        let initial_y = position.1;
+
+        for c in text.chars() {
+            let font_char = font8x8::BASIC_UNICODE[c as usize];
+
+            for y in font_char.byte_array() {
+                for bit in 0..8 {
+                    match y & 1 << bit {
+                        0 => self.draw_pixel((position.0 + bit, position.1), (0, 0, 0)),
+                        _ => self.draw_pixel((position.0 + bit, position.1), (255, 255, 255)),
+                    }
+                }
+                position.1 += 1;
+            }
+
+            position.0 += 8;
+            position.1 = initial_y;
+        }
+    }
+
     pub fn resize(&mut self, new_width: usize, new_height: usize) {
         self.buffer
             .resize(new_width * new_height * BYTES_PER_PIXEL, 0);

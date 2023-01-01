@@ -6,6 +6,7 @@ version = 3
 name = "arcana"
 version = "0.1.0"
 dependencies = [
+ "font8x8",
  "sdl2",
 ]
 
@@ -35,6 +36,12 @@ checksum = "db34956e100b30725f2eb215f90d4871051239535632f84fea3bc92722c66b7c"
 dependencies = [
  "cc",
 ]
+
+[[package]]
+name = "font8x8"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "875488b8711a968268c7cf5d139578713097ca4635a76044e8fe8eedf831d07e"
 
 [[package]]
 name = "lazy_static"

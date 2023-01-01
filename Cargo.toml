@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 sdl2 = { version = "0.35", features = ["bundled", "static-link", "unsafe_textures"] }
+font8x8 = "0.3"
