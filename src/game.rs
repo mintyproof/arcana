@@ -47,7 +47,7 @@ impl GameState for GameStateGameplay {
             }
         }
 
-        pixels.draw_text((16, 16), &format!("fps: {:.0}", (1.0 / delta_time).floor()))
+        pixels.draw_text((8, 8), &format!("fps: {:.0}", (1.0 / delta_time).floor()))
     }
 }
 

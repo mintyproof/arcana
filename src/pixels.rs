@@ -36,8 +36,6 @@ impl Pixels {
 
     pub fn draw_text(&mut self, position: (usize, usize), text: &str) {
         let mut position = position;
-        let initial_y = position.1;
-
         for c in text.chars() {
             let font_char = font8x8::BASIC_UNICODE[c as usize];
 
@@ -52,7 +50,7 @@ impl Pixels {
             }
 
             position.0 += 8;
-            position.1 = initial_y;
+            position.1 -= 8; // reset y position for next character!
         }
     }
 
