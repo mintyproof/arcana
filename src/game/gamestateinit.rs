@@ -1,10 +1,10 @@
 use super::{GameState, GameStateGameplay, GameStateUpdate};
-use crate::framework::Pixels;
+use crate::framework::{Input, Pixels};
 
 pub struct GameStateInit {}
 
 impl GameState for GameStateInit {
-    fn on_update(&mut self, _delta_time: f32) -> GameStateUpdate {
+    fn on_update(&mut self, _delta_time: f32, _input: &Input) -> GameStateUpdate {
         GameStateUpdate::Replace(Box::new(GameStateGameplay::new()))
     }
 

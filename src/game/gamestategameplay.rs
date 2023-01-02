@@ -1,5 +1,5 @@
 use super::{GameState, GameStateUpdate};
-use crate::framework::Pixels;
+use crate::framework::{Input, Pixels};
 use crate::world::{Tile, World};
 use glam::{Vec2, Vec3, Vec4, Mat4};
 
@@ -24,7 +24,7 @@ impl GameStateGameplay {
 }
 
 impl GameState for GameStateGameplay {
-    fn on_update(&mut self, _delta_time: f32) -> GameStateUpdate {
+    fn on_update(&mut self, _delta_time: f32, _input: &Input) -> GameStateUpdate {
         GameStateUpdate::Continue
     }
 
@@ -45,11 +45,10 @@ impl GameState for GameStateGameplay {
                     Vec3::new(direction.x, direction.y, direction.z).normalize()
                 };
 
-                let result = self.world.raycast(pos, dir, 8);
+                let result = self.world.raycast(pos, dir, 16);
 
                 if result != 0 {
-                    let c = (x ^ y) as u8;
-                    pixels.draw_pixel((x, y), (c, c, c));
+                    pixels.draw_pixel((x, y), (255, 255, 255));
                 }
             }
         }

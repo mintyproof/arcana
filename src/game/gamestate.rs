@@ -1,4 +1,4 @@
-use crate::framework::Pixels;
+use crate::framework::{Input, Pixels};
 
 pub enum GameStateUpdate {
     /// continue with no changes to game state.
@@ -14,6 +14,6 @@ pub enum GameStateUpdate {
 }
 
 pub trait GameState {
-    fn on_update(&mut self, delta_time: f32) -> GameStateUpdate;
+    fn on_update(&mut self, delta_time: f32, input: &Input) -> GameStateUpdate;
     fn on_draw(&mut self, delta_time: f32, pixels: &mut Pixels);
 }
