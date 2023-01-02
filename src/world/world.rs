@@ -1,10 +1,15 @@
-use glam::{Vec3, IVec3};
+use glam::{IVec3, Vec3};
 
 pub type Tile = u8;
 
 const SIZE_X: usize = 16;
 const SIZE_Y: usize = 16;
 const SIZE_Z: usize = 16;
+
+pub struct RaycastResult {
+    pub tile: Tile,
+    pub normal: Vec3
+}
 
 pub struct World {
     size: (usize, usize, usize),
@@ -16,17 +21,21 @@ impl World {
         let size = (SIZE_X, SIZE_Y, SIZE_Z);
         let mut tiles = Vec::new();
         tiles.resize(SIZE_X * SIZE_Y * SIZE_Z, 0);
-        
+
         Self { size, tiles }
     }
 
-    pub fn raycast(&self, pos: Vec3, dir: Vec3, distance: usize) -> Tile {
-        let mut t_pos = IVec3::new(pos.x.floor() as i32, pos.y.floor() as i32, pos.z.floor() as i32);
+    pub fn raycast(&self, pos: Vec3, dir: Vec3, distance: usize) -> Option<RaycastResult> {
+        let mut t_pos = IVec3::new(
+            pos.x.floor() as i32,
+            pos.y.floor() as i32,
+            pos.z.floor() as i32,
+        );
 
         let t_step = IVec3::new(
             if dir.x < 0.0 { -1 } else { 1 },
             if dir.y < 0.0 { -1 } else { 1 },
-            if dir.z < 0.0 { -1 } else { 1 }
+            if dir.z < 0.0 { -1 } else { 1 },
         );
 
         let t_delta = (1.0 / dir).abs();
@@ -51,7 +60,7 @@ impl World {
         let mut steps_taken = 0;
         loop {
             steps_taken += 1;
-            
+
             if t_max.x < t_max.y || t_max.z < t_max.y {
                 if t_max.x < t_max.z {
                     t_max.x += t_delta.x;
@@ -67,7 +76,10 @@ impl World {
 
             if let Some(tile) = self.get(t_pos.x as usize, t_pos.y as usize, t_pos.z as usize) {
                 if tile != 0 {
-                    return tile;
+                    return Some(RaycastResult {
+                        tile,
+                        normal: Vec3::new(1.0, 1.0, 1.0)
+                    });
                 }
             }
 
@@ -76,7 +88,7 @@ impl World {
             }
         }
 
-        0
+        None
     }
 
     pub fn in_bounds(&self, x: usize, y: usize, z: usize) -> bool {

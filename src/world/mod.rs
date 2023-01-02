@@ -1,3 +1,3 @@
 mod world;
 
-pub use world::{Tile, World};
+pub use world::{RaycastResult, Tile, World};

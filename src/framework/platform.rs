@@ -1,4 +1,4 @@
-use super::{Pixels, Input};
+use super::{Input, Pixels};
 
 pub trait Platform {
     /// signals the platform to poll events- window changes, inputs, etc.

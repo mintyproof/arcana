@@ -1,10 +1,10 @@
 use super::{GameState, GameStateUpdate};
 use crate::framework::{Input, Pixels};
-use crate::world::{Tile, World};
-use glam::{Vec2, Vec3, Vec4, Mat4};
+use crate::world::{RaycastResult, Tile, World};
+use glam::{Mat4, Vec2, Vec3, Vec4};
 
 pub struct GameStateGameplay {
-    world: World
+    world: World,
 }
 
 impl GameStateGameplay {
@@ -31,13 +31,14 @@ impl GameState for GameStateGameplay {
     fn on_draw(&mut self, delta_time: f32, pixels: &mut Pixels) {
         let pos = Vec3::new(2.0, 2.0, -3.0);
         let view = Mat4::look_at_lh(pos, Vec3::new(2.0, 2.0, 0.0), Vec3::new(0.0, 1.0, 0.0));
-        let proj = Mat4::perspective_lh(90.0_f32.to_radians(), 1.0, 0.001, 100.0);
+        let aspect = pixels.width() as f32 / pixels.height() as f32;
+        let proj = Mat4::perspective_infinite_lh(90.0_f32.to_radians(), aspect, 0.001);
 
         for y in 0..pixels.width() {
             for x in 0..pixels.height() {
                 let screen_coord = Vec2::new(
                     2.0 * x as f32 / pixels.width() as f32 - 1.0,
-                    2.0 * y as f32 / pixels.height() as f32 - 1.0
+                    2.0 * y as f32 / pixels.height() as f32 - 1.0,
                 );
                 let dir = {
                     let clip_space = Vec4::new(screen_coord.x, screen_coord.y, 1.0, 1.0);
@@ -45,14 +46,22 @@ impl GameState for GameStateGameplay {
                     Vec3::new(direction.x, direction.y, direction.z).normalize()
                 };
 
-                let result = self.world.raycast(pos, dir, 16);
-
-                if result != 0 {
-                    pixels.draw_pixel((x, y), (255, 255, 255));
+                if let Some(result) = self.world.raycast(pos, dir, 16) {
+                    pixels.draw_pixel(
+                        (x, y),
+                        (
+                            (result.normal.x * 255.0).floor() as u8,
+                            (result.normal.y * 255.0).floor() as u8,
+                            (result.normal.z * 255.0).floor() as u8
+                        )
+                    );
                 }
             }
         }
 
-        pixels.draw_text((8, 8), &format!("fps: {:.0}", (1.0 / delta_time).floor()))
+        pixels.draw_text((8, 8), &format!("fps: {:.0}", (1.0 / delta_time).floor()));
+        pixels.draw_text((8, 16), &format!("x: {:.2}", pos.x));
+        pixels.draw_text((8, 24), &format!("y: {:.2}", pos.y));
+        pixels.draw_text((8, 32), &format!("z: {:.2}", pos.z));
     }
 }
