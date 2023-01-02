@@ -1,7 +1,5 @@
 pub mod game;
-pub mod pixels;
-pub mod platform;
-pub mod platformsdl2;
+pub mod framework;
 
 use crate::game::{Game, GameStateInit};
 

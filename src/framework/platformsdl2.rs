@@ -1,7 +1,4 @@
-use crate::{
-    pixels::Pixels,
-    platform::{Platform, Input},
-};
+use super::{Pixels, Platform, Input};
 use sdl2::{
     event::Event,
     keyboard::Keycode,

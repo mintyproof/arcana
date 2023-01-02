@@ -1,4 +1,4 @@
-use crate::pixels::Pixels;
+use super::Pixels;
 
 /// represents the player's inputs into the game- e.g. movement and pressed actions like jump / interact.
 pub struct Input {
