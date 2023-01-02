@@ -40,7 +40,7 @@ impl Game {
             previous_runtime = current_runtime;
 
             let state_result = if let Some(state) = self.states.last_mut() {
-                let state_result = state.on_update(delta_time);
+                let state_result = state.on_update(delta_time, &self.platform.input());
                 state.on_draw(delta_time, &mut self.pixels);
 
                 state_result
