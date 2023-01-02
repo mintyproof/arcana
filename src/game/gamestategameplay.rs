@@ -24,7 +24,7 @@ impl GameStateGameplay {
 
         let camera = Transform::new(
             Vec3::new(2.0, 2.0, -3.0),
-            Vec3::ZERO,
+            Vec3::new(0.0, 0.0, 0.0),
             Vec3::ONE
         );
 
@@ -32,10 +32,10 @@ impl GameStateGameplay {
     }
 
     pub fn render_world(&self, pixels: &mut Pixels) {
-        let view = Mat4::look_at_lh(self.camera.position(), Vec3::new(2.0, 2.0, 0.0), Vec3::new(0.0, 1.0, 0.0));
+        let view = self.camera.view();
         let aspect = pixels.width() as f32 / pixels.height() as f32;
         let proj = Mat4::perspective_infinite_lh(90.0_f32.to_radians(), aspect, 0.001);
-
+        
         for y in 0..pixels.width() {
             for x in 0..pixels.height() {
                 let screen_coord = Vec2::new(
@@ -64,9 +64,24 @@ impl GameStateGameplay {
 
     pub fn render_debug_ui(&self, delta_time: f32, pixels: &mut Pixels) {
         pixels.draw_text((8, 8), &format!("fps: {:.0}", (1.0 / delta_time).floor()));
-        pixels.draw_text((8, 16), &format!("x: {:.2}", self.camera.position().x));
-        pixels.draw_text((8, 24), &format!("y: {:.2}", self.camera.position().y));
-        pixels.draw_text((8, 32), &format!("z: {:.2}", self.camera.position().z));
+        pixels.draw_text(
+            (8, 16),
+            &format!(
+                "pos: {:.2} {:.2} {:.2}",
+                self.camera.position().x,
+                self.camera.position().y,
+                self.camera.position().z
+            )
+        );
+        pixels.draw_text(
+            (8, 24),
+            &format!(
+                "dir: {:.2} {:.2} {:.2}",
+                self.camera.rotation().x,
+                self.camera.rotation().y,
+                self.camera.rotation().z
+            )
+        );
     }
 }
 
