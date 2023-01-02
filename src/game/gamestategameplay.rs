@@ -1,6 +1,6 @@
 use super::{GameState, GameStateUpdate};
 use crate::framework::{Input, Pixels};
-use crate::world::{RaycastResult, Tile, World};
+use crate::world::World;
 use crate::math::Transform;
 use glam::{Mat4, Vec2, Vec3, Vec4};
 
@@ -86,7 +86,8 @@ impl GameStateGameplay {
 }
 
 impl GameState for GameStateGameplay {
-    fn on_update(&mut self, _delta_time: f32, _input: &Input) -> GameStateUpdate {
+    fn on_update(&mut self, delta_time: f32, input: &Input) -> GameStateUpdate {
+        self.camera.set_position(self.camera.position() + self.camera.forward() * delta_time * input.forward_move);
         GameStateUpdate::Continue
     }
 

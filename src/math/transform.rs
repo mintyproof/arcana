@@ -25,7 +25,8 @@ impl Transform {
             view: Mat4::IDENTITY
         };
 
-        transform.update();
+        transform.update_vectors();
+        transform.update_matrices();
         
         transform
     }
@@ -42,41 +43,20 @@ impl Transform {
         Transform::new(Vec3::ZERO, rotation, Vec3::ONE)
     }
 
-    fn update(&mut self) {
-        // convert rotations to be in the range of -180.0 to 180.0!
+    pub fn set_position(&mut self, position: Vec3) {
+        self.position = position;
+        self.update_matrices();
+    }
 
-        if self.rotation.x.abs() > 180.0 {
-            self.rotation.x -= 360.0 * ((self.rotation.x + 180.0).floor() / 360.0) * self.rotation.x.signum();
-        }
+    pub fn set_rotation(&mut self, rotation: Vec3) {
+        self.rotation = rotation;
+        self.update_vectors();
+        self.update_matrices();
+    }
 
-        if self.rotation.y.abs() > 180.0 {
-            self.rotation.y -= 360.0 * ((self.rotation.y + 180.0).floor() / 360.0) * self.rotation.y.signum();
-        }
-        
-        if self.rotation.x.abs() > 180.0 {
-            self.rotation.z -= 360.0 * ((self.rotation.z + 180.0).floor() / 360.0) * self.rotation.z.signum();
-        }
-
-        // calculate forward, right, and up vectors!
-
-        let rx_rads = self.rotation.x.to_radians();
-        let ry_rads = self.rotation.y.to_radians();
-        let rz_rads = self.rotation.z.to_radians();
-
-        self.forward.x =  rx_rads.cos() * ry_rads.sin();
-        self.forward.y = -rx_rads.sin();
-        self.forward.z =  rx_rads.cos() * ry_rads.cos();
-
-        self.right.x =  rz_rads.cos() * -ry_rads.cos();
-        self.right.y = -rz_rads.sin();
-        self.right.z =  rz_rads.cos() * ry_rads.sin();
-
-        self.up = self.right.cross(self.forward);
-
-        // calculate view and model matrices!
-
-        self.model = Mat4::IDENTITY; // TODO
-        self.view = Mat4::look_at_lh(self.position, self.position + self.forward, self.up);
+    pub fn set_scale(&mut self, scale: Vec3) {
+        self.scale = scale;
+        self.update_matrices();
     }
 
     pub fn position(&self) -> Vec3 {
@@ -121,5 +101,44 @@ impl Transform {
 
     pub fn view(&self) -> Mat4 {
         self.view
+    }
+
+    fn update_vectors(&mut self) {
+        // convert rotations to be in the range of -180.0 to 180.0!
+
+        if self.rotation.x.abs() > 180.0 {
+            self.rotation.x -= 360.0 * ((self.rotation.x + 180.0).floor() / 360.0) * self.rotation.x.signum();
+        }
+
+        if self.rotation.y.abs() > 180.0 {
+            self.rotation.y -= 360.0 * ((self.rotation.y + 180.0).floor() / 360.0) * self.rotation.y.signum();
+        }
+        
+        if self.rotation.x.abs() > 180.0 {
+            self.rotation.z -= 360.0 * ((self.rotation.z + 180.0).floor() / 360.0) * self.rotation.z.signum();
+        }
+
+        // calculate forward, right, and up vectors!
+
+        let rx_rads = self.rotation.x.to_radians();
+        let ry_rads = self.rotation.y.to_radians();
+        let rz_rads = self.rotation.z.to_radians();
+
+        self.forward.x =  rx_rads.cos() * ry_rads.sin();
+        self.forward.y = -rx_rads.sin();
+        self.forward.z =  rx_rads.cos() * ry_rads.cos();
+
+        self.right.x =  rz_rads.cos() * -ry_rads.cos();
+        self.right.y = -rz_rads.sin();
+        self.right.z =  rz_rads.cos() * ry_rads.sin();
+
+        self.up = self.right.cross(self.forward);
+    }
+
+    fn update_matrices(&mut self) {
+        // calculate view and model matrices!
+
+        self.model = Mat4::IDENTITY; // TODO
+        self.view = Mat4::look_at_lh(self.position, self.position + self.forward, self.up);
     }
 }

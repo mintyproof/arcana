@@ -1,7 +1,7 @@
 use super::{Input, Pixels, Platform};
 use sdl2::{
     event::Event,
-    keyboard::Keycode,
+    keyboard::{Keycode, Scancode},
     render::{Canvas, Texture, TextureCreator},
     video::{Window, WindowContext},
 };
@@ -115,9 +115,20 @@ impl Platform for PlatformSDL2 {
     }
 
     fn input(&self) -> Input {
+        let keyboard_state = self.sdl.event_pump.keyboard_state();
+
+        let mut forward_move = 0.0;
+        let mut sideway_move = 0.0;
+
+        if keyboard_state.is_scancode_pressed(Scancode::W) { forward_move += 1.0; }
+        if keyboard_state.is_scancode_pressed(Scancode::S) { forward_move -= 1.0; }
+
+        if keyboard_state.is_scancode_pressed(Scancode::D) { sideway_move += 1.0; }
+        if keyboard_state.is_scancode_pressed(Scancode::A) { sideway_move -= 1.0; }
+
         Input {
-            forward_move: 0.0,
-            sideway_move: 0.0,
+            forward_move,
+            sideway_move,
             mouse_x: 0,
             mouse_y: 0,
         }

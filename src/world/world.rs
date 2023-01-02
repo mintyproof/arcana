@@ -1,4 +1,4 @@
-use glam::{IVec3, Vec3};
+use glam::{IVec3, Vec2, Vec3};
 
 pub type Tile = u8;
 
@@ -8,6 +8,7 @@ const SIZE_Z: usize = 16;
 
 pub struct RaycastResult {
     pub tile: Tile,
+    pub uv: Vec2,
     pub normal: Vec3
 }
 
@@ -78,6 +79,7 @@ impl World {
                 if tile != 0 {
                     return Some(RaycastResult {
                         tile,
+                        uv: Vec2::ONE,
                         normal: Vec3::ONE
                     });
                 }
