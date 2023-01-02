@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sdl2 = { version = "0.35", features = ["bundled", "static-link", "unsafe_textures"] }
 font8x8 = "0.3"
+glam = "0.22"
+sdl2 = { version = "0.35", features = ["bundled", "static-link", "unsafe_textures"] }
