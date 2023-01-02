@@ -1,3 +1,5 @@
+use glam::{Vec3, IVec3};
+
 pub type Tile = u8;
 
 const SIZE_X: usize = 16;
@@ -14,41 +16,66 @@ impl World {
         let size = (SIZE_X, SIZE_Y, SIZE_Z);
         let mut tiles = Vec::new();
         tiles.resize(SIZE_X * SIZE_Y * SIZE_Z, 0);
-
+        
         Self { size, tiles }
     }
 
-    pub fn raycast() -> Tile {
-        /* glsl prototype code:
+    pub fn raycast(&self, pos: Vec3, dir: Vec3, distance: usize) -> Tile {
+        let mut t_pos = IVec3::new(pos.x.floor() as i32, pos.y.floor() as i32, pos.z.floor() as i32);
 
-        ivec3 tPos = ivec3(floor(rayPos));
-        ivec3 tStep;
-        tStep.x = rayDir.x < 0.0 ? -1 : 1;
-        tStep.y = rayDir.y < 0.0 ? -1 : 1;
-        tStep.z = rayDir.z < 0.0 ? -1 : 1;
-        vec3 tDelta = abs(1.0 / rayDir);
-        vec3 tMax;
-        tStep.x < 0 ? tMax.x = (rayPos.x - float(tPos.x)) * tDelta.x
-                    : tMax.x = (float(tPos.x) + 1.0 - rayPos.x) * tDelta.x;
-        tStep.y < 0 ? tMax.y = (rayPos.y - float(tPos.y)) * tDelta.y
-                    : tMax.y = (float(tPos.y) + 1.0 - rayPos.y) * tDelta.y;
-        tStep.z < 0 ? tMax.z = (rayPos.z - float(tPos.z)) * tDelta.z
-                    : tMax.z = (float(tPos.z) + 1.0 - rayPos.z) * tDelta.z;
+        let t_step = IVec3::new(
+            if dir.x < 0.0 { -1 } else { 1 },
+            if dir.y < 0.0 { -1 } else { 1 },
+            if dir.z < 0.0 { -1 } else { 1 }
+        );
 
-        int tile = 0, stepsTaken = 0;
-        vec3 mask;
-        do {
-            stepsTaken += 1;
+        let t_delta = (1.0 / dir).abs();
 
-            mask = step(tMax.xyz, tMax.yzx) * step(tMax.xyz, tMax.zxy);
-            tMax += tDelta * mask;
-            tPos += tStep * ivec3(mask);
+        let mut t_max = Vec3::ZERO;
+        if t_step.x < 0 {
+            t_max.x = (pos.x - t_pos.x as f32) * t_delta.x;
+        } else {
+            t_max.x = (t_pos.x as f32 + 1.0 - pos.x) * t_delta.x;
+        }
+        if t_step.y < 0 {
+            t_max.y = (pos.y - t_pos.y as f32) * t_delta.y;
+        } else {
+            t_max.y = (t_pos.y as f32 + 1.0 - pos.y) * t_delta.y;
+        }
+        if t_step.z < 0 {
+            t_max.z = (pos.z - t_pos.z as f32) * t_delta.z;
+        } else {
+            t_max.z = (t_pos.z as f32 + 1.0 - pos.z) * t_delta.z;
+        }
 
-            tile = get(tPos.x, tPos.y, tPos.z);
-        } while (tile == 0 && stepsTaken < renderLimit);
+        let mut steps_taken = 0;
+        loop {
+            steps_taken += 1;
+            
+            if t_max.x < t_max.y || t_max.z < t_max.y {
+                if t_max.x < t_max.z {
+                    t_max.x += t_delta.x;
+                    t_pos.x += t_step.x;
+                } else {
+                    t_max.z += t_delta.z;
+                    t_pos.z += t_step.z;
+                }
+            } else {
+                t_max.y += t_delta.y;
+                t_pos.y += t_step.y;
+            }
 
-        return tile;
-        */
+            if let Some(tile) = self.get(t_pos.x as usize, t_pos.y as usize, t_pos.z as usize) {
+                if tile != 0 {
+                    return tile;
+                }
+            }
+
+            if steps_taken > distance {
+                break;
+            }
+        }
+
         0
     }
 
