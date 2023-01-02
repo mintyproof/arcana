@@ -78,7 +78,7 @@ impl World {
                 if tile != 0 {
                     return Some(RaycastResult {
                         tile,
-                        normal: Vec3::new(1.0, 1.0, 1.0)
+                        normal: Vec3::ONE
                     });
                 }
             }
