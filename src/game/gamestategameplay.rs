@@ -1,13 +1,12 @@
 use super::{GameState, GameStateUpdate};
 use crate::framework::{Input, Pixels};
-use crate::world::World;
 use crate::math::Transform;
+use crate::world::World;
 use glam::{Mat4, Vec2, Vec3, Vec4};
-
 
 pub struct GameStateGameplay {
     world: World,
-    camera: Transform
+    camera: Transform,
 }
 
 impl GameStateGameplay {
@@ -25,7 +24,7 @@ impl GameStateGameplay {
         let camera = Transform::new(
             Vec3::new(2.0, 2.0, -3.0),
             Vec3::new(0.0, 0.0, 0.0),
-            Vec3::ONE
+            Vec3::ONE,
         );
 
         Self { world, camera }
@@ -35,7 +34,7 @@ impl GameStateGameplay {
         let view = self.camera.view();
         let aspect = pixels.width() as f32 / pixels.height() as f32;
         let proj = Mat4::perspective_infinite_lh(90.0_f32.to_radians(), aspect, 0.001);
-        
+
         for y in 0..pixels.width() {
             for x in 0..pixels.height() {
                 let screen_coord = Vec2::new(
@@ -54,8 +53,8 @@ impl GameStateGameplay {
                         (
                             (result.normal.x * 255.0).floor() as u8,
                             (result.normal.y * 255.0).floor() as u8,
-                            (result.normal.z * 255.0).floor() as u8
-                        )
+                            (result.normal.z * 255.0).floor() as u8,
+                        ),
                     );
                 }
             }
@@ -71,7 +70,7 @@ impl GameStateGameplay {
                 self.camera.position().x,
                 self.camera.position().y,
                 self.camera.position().z
-            )
+            ),
         );
         pixels.draw_text(
             (8, 24),
@@ -80,14 +79,16 @@ impl GameStateGameplay {
                 self.camera.rotation().x,
                 self.camera.rotation().y,
                 self.camera.rotation().z
-            )
+            ),
         );
     }
 }
 
 impl GameState for GameStateGameplay {
     fn on_update(&mut self, delta_time: f32, input: &Input) -> GameStateUpdate {
-        self.camera.set_position(self.camera.position() + self.camera.forward() * delta_time * input.forward_move);
+        self.camera.set_position(
+            self.camera.position() + self.camera.forward() * delta_time * input.forward_move,
+        );
         GameStateUpdate::Continue
     }
 

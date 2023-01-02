@@ -8,7 +8,7 @@ pub struct Transform {
     up: Vec3,
     forward: Vec3,
     model: Mat4,
-    view: Mat4
+    view: Mat4,
 }
 
 impl Transform {
@@ -22,12 +22,12 @@ impl Transform {
             up: Vec3::ZERO,
             forward: Vec3::ZERO,
             model: Mat4::IDENTITY,
-            view: Mat4::IDENTITY
+            view: Mat4::IDENTITY,
         };
 
         transform.update_vectors();
         transform.update_matrices();
-        
+
         transform
     }
 
@@ -107,15 +107,18 @@ impl Transform {
         // convert rotations to be in the range of -180.0 to 180.0!
 
         if self.rotation.x.abs() > 180.0 {
-            self.rotation.x -= 360.0 * ((self.rotation.x + 180.0).floor() / 360.0) * self.rotation.x.signum();
+            self.rotation.x -=
+                360.0 * ((self.rotation.x + 180.0).floor() / 360.0) * self.rotation.x.signum();
         }
 
         if self.rotation.y.abs() > 180.0 {
-            self.rotation.y -= 360.0 * ((self.rotation.y + 180.0).floor() / 360.0) * self.rotation.y.signum();
+            self.rotation.y -=
+                360.0 * ((self.rotation.y + 180.0).floor() / 360.0) * self.rotation.y.signum();
         }
-        
+
         if self.rotation.x.abs() > 180.0 {
-            self.rotation.z -= 360.0 * ((self.rotation.z + 180.0).floor() / 360.0) * self.rotation.z.signum();
+            self.rotation.z -=
+                360.0 * ((self.rotation.z + 180.0).floor() / 360.0) * self.rotation.z.signum();
         }
 
         // calculate forward, right, and up vectors!
@@ -124,13 +127,13 @@ impl Transform {
         let ry_rads = self.rotation.y.to_radians();
         let rz_rads = self.rotation.z.to_radians();
 
-        self.forward.x =  rx_rads.cos() * ry_rads.sin();
+        self.forward.x = rx_rads.cos() * ry_rads.sin();
         self.forward.y = -rx_rads.sin();
-        self.forward.z =  rx_rads.cos() * ry_rads.cos();
+        self.forward.z = rx_rads.cos() * ry_rads.cos();
 
-        self.right.x =  rz_rads.cos() * -ry_rads.cos();
+        self.right.x = rz_rads.cos() * -ry_rads.cos();
         self.right.y = -rz_rads.sin();
-        self.right.z =  rz_rads.cos() * ry_rads.sin();
+        self.right.z = rz_rads.cos() * ry_rads.sin();
 
         self.up = self.right.cross(self.forward);
     }

@@ -1,8 +1,10 @@
-pub const BYTES_PER_PIXEL: usize = 3;
+fn pack_rgba(r: u8, g: u8, b: u8, a: u8) -> u32 {
+    return (a as u32) << 24 | (r as u32) << 16 | (g as u32) << 8 | b as u32;
+}
 
 #[derive(Clone)]
 pub struct Pixels {
-    buffer: Vec<u8>,
+    buffer: Vec<u32>,
     width: usize,
     height: usize,
 }
@@ -10,7 +12,7 @@ pub struct Pixels {
 impl Pixels {
     pub fn new(width: usize, height: usize) -> Self {
         let mut buffer = Vec::new();
-        buffer.resize(width * height * BYTES_PER_PIXEL, 0);
+        buffer.resize(width * height, 0);
 
         Self {
             buffer,
@@ -20,18 +22,13 @@ impl Pixels {
     }
 
     pub fn fill(&mut self, colour: (u8, u8, u8)) {
-        for i in 0..(self.width * self.height) {
-            self.buffer[i] = colour.0;
-            self.buffer[i + 1] = colour.1;
-            self.buffer[i + 2] = colour.2;
-        }
+        self.buffer
+            .fill(pack_rgba(colour.0, colour.1, colour.2, 255));
     }
 
     pub fn draw_pixel(&mut self, position: (usize, usize), colour: (u8, u8, u8)) {
         let offset = self.offset_of(position.0, position.1);
-        self.buffer[offset] = colour.0;
-        self.buffer[offset + 1] = colour.1;
-        self.buffer[offset + 2] = colour.2;
+        self.buffer[offset] = pack_rgba(colour.0, colour.1, colour.2, 255);
     }
 
     pub fn draw_text(&mut self, position: (usize, usize), text: &str) {
@@ -55,8 +52,7 @@ impl Pixels {
     }
 
     pub fn resize(&mut self, new_width: usize, new_height: usize) {
-        self.buffer
-            .resize(new_width * new_height * BYTES_PER_PIXEL, 0);
+        self.buffer.resize(new_width * new_height, 0);
         self.buffer.fill(0);
 
         self.width = new_width;
@@ -72,18 +68,18 @@ impl Pixels {
     }
 
     pub fn pitch(&self) -> usize {
-        self.width * BYTES_PER_PIXEL
+        self.width
     }
 
-    pub fn as_bytes(&self) -> &[u8] {
+    pub fn as_bytes(&self) -> &[u32] {
         &self.buffer
     }
 
-    pub fn as_bytes_mut(&mut self) -> &mut [u8] {
+    pub fn as_bytes_mut(&mut self) -> &mut [u32] {
         &mut self.buffer
     }
 
     pub fn offset_of(&self, x: usize, y: usize) -> usize {
-        y * self.pitch() + x * BYTES_PER_PIXEL
+        y * self.pitch() + x
     }
 }

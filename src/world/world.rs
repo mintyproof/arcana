@@ -9,7 +9,7 @@ const SIZE_Z: usize = 16;
 pub struct RaycastResult {
     pub tile: Tile,
     pub uv: Vec2,
-    pub normal: Vec3
+    pub normal: Vec3,
 }
 
 pub struct World {
@@ -80,7 +80,7 @@ impl World {
                     return Some(RaycastResult {
                         tile,
                         uv: Vec2::ONE,
-                        normal: Vec3::ONE
+                        normal: Vec3::ONE,
                     });
                 }
             }

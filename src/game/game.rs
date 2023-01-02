@@ -11,7 +11,7 @@ impl Game {
     /// creates a new game.
     pub fn new() -> Self {
         Self {
-            platform: Box::new(PlatformSDL2::new(768, 768)),
+            platform: Box::new(PlatformMinifb::new(768, 768)),
             states: Vec::new(),
             pixels: Pixels::new(256, 256),
         }

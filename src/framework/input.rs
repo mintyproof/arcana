@@ -15,5 +15,5 @@ pub struct Input {
     pub sideway_move: f32,
 
     pub mouse_x: u32,
-    pub mouse_y: u32
+    pub mouse_y: u32,
 }

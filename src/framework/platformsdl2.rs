@@ -57,7 +57,7 @@ impl PlatformSDL2 {
             .unwrap();
         let texture_creator = canvas.texture_creator();
         let display_texture = texture_creator
-            .create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGB24, 1, 1)
+            .create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGBA8888, 1, 1)
             .unwrap();
 
         let performance_counter_at_start = sdl.timer.performance_counter();
@@ -105,11 +105,13 @@ impl Platform for PlatformSDL2 {
             self.create_or_refresh_texture(pixels.width(), pixels.height());
         }
 
+        /*
         self.display_texture
             .with_lock(None, |buffer: &mut [u8], _: usize| {
                 buffer.copy_from_slice(&pixels.as_bytes());
             })
             .unwrap();
+        */
         self.canvas.copy(&self.display_texture, None, None).unwrap();
         self.canvas.present();
     }
@@ -120,11 +122,19 @@ impl Platform for PlatformSDL2 {
         let mut forward_move = 0.0;
         let mut sideway_move = 0.0;
 
-        if keyboard_state.is_scancode_pressed(Scancode::W) { forward_move += 1.0; }
-        if keyboard_state.is_scancode_pressed(Scancode::S) { forward_move -= 1.0; }
+        if keyboard_state.is_scancode_pressed(Scancode::W) {
+            forward_move += 1.0;
+        }
+        if keyboard_state.is_scancode_pressed(Scancode::S) {
+            forward_move -= 1.0;
+        }
 
-        if keyboard_state.is_scancode_pressed(Scancode::D) { sideway_move += 1.0; }
-        if keyboard_state.is_scancode_pressed(Scancode::A) { sideway_move -= 1.0; }
+        if keyboard_state.is_scancode_pressed(Scancode::D) {
+            sideway_move += 1.0;
+        }
+        if keyboard_state.is_scancode_pressed(Scancode::A) {
+            sideway_move -= 1.0;
+        }
 
         Input {
             forward_move,
