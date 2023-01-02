@@ -10,7 +10,7 @@ pub enum GameStateUpdate {
     /// replaces the current game state entirely.
     Replace(Box<dyn GameState>),
     /// exits the game entirely.
-    Quit
+    Quit,
 }
 
 pub trait GameState {

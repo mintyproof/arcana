@@ -1,5 +1,6 @@
-pub mod game;
 pub mod framework;
+pub mod game;
+pub mod world;
 
 use crate::game::{Game, GameStateInit};
 

@@ -1,4 +1,4 @@
-use super::{GameState, GameStateUpdate, GameStateGameplay};
+use super::{GameState, GameStateGameplay, GameStateUpdate};
 use crate::framework::Pixels;
 
 pub struct GameStateInit {}

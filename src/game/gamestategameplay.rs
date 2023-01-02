@@ -1,5 +1,6 @@
 use super::{GameState, GameStateUpdate};
 use crate::framework::Pixels;
+use crate::world::{Tile, World};
 
 pub struct GameStateGameplay {}
 

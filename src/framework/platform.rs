@@ -15,14 +15,14 @@ pub struct Input {
     /// * ` 0.0` : does not want to move left nor right
     /// * `-1.0` : wants to move to the left at full speed6
     pub sideway_move: f32,
-    
+
     pub mouse_x: u32,
-    pub mouse_y: u32
+    pub mouse_y: u32,
 }
 
 pub trait Platform {
     /// signals the platform to poll events- window changes, inputs, etc.
-    /// 
+    ///
     /// returns true if execution should continue, false if the game should exit.
     fn poll_events(&mut self) -> bool;
 

@@ -1,5 +1,5 @@
-use crate::framework::*;
 use super::{GameState, GameStateUpdate};
+use crate::framework::*;
 
 pub struct Game {
     platform: Box<dyn Platform>,
@@ -47,20 +47,20 @@ impl Game {
             } else {
                 break 'game_loop; // no states left on the stack, so end the game!
             };
-            
+
             match state_result {
                 GameStateUpdate::Continue => (),
                 GameStateUpdate::Push(result_state) => {
                     self.push_state(result_state);
-                },
+                }
                 GameStateUpdate::Pop => {
                     self.pop_state();
-                },
+                }
                 GameStateUpdate::Replace(result_state) => {
                     self.pop_state();
                     self.push_state(result_state);
-                },
-                GameStateUpdate::Quit => break 'game_loop
+                }
+                GameStateUpdate::Quit => break 'game_loop,
             }
 
             self.platform.set_pixels(&self.pixels);

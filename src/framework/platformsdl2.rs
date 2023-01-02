@@ -1,4 +1,4 @@
-use super::{Pixels, Platform, Input};
+use super::{Input, Pixels, Platform};
 use sdl2::{
     event::Event,
     keyboard::Keycode,
@@ -36,7 +36,7 @@ pub struct PlatformSDL2 {
     canvas: Canvas<Window>,
     texture_creator: TextureCreator<WindowContext>,
     display_texture: Texture,
-    performance_counter_at_start: u64
+    performance_counter_at_start: u64,
 }
 
 impl PlatformSDL2 {
@@ -59,7 +59,7 @@ impl PlatformSDL2 {
         let display_texture = texture_creator
             .create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGB24, 1, 1)
             .unwrap();
-        
+
         let performance_counter_at_start = sdl.timer.performance_counter();
 
         Self {
@@ -67,13 +67,18 @@ impl PlatformSDL2 {
             canvas,
             texture_creator,
             display_texture,
-            performance_counter_at_start
+            performance_counter_at_start,
         }
     }
 
     fn create_or_refresh_texture(&mut self, width: usize, height: usize) {
-        self.display_texture = self.texture_creator
-            .create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGB24, width as u32, height as u32)
+        self.display_texture = self
+            .texture_creator
+            .create_texture_streaming(
+                sdl2::pixels::PixelFormatEnum::RGB24,
+                width as u32,
+                height as u32,
+            )
             .unwrap();
     }
 }
@@ -121,6 +126,7 @@ impl Platform for PlatformSDL2 {
     fn runtime(&self) -> f32 {
         let performance_frequency = self.sdl.timer.performance_frequency();
         let performance_counter_now = self.sdl.timer.performance_counter();
-        (performance_counter_now - self.performance_counter_at_start) as f32 / performance_frequency as f32
+        (performance_counter_now - self.performance_counter_at_start) as f32
+            / performance_frequency as f32
     }
 }
